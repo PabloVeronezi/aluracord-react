@@ -1,6 +1,5 @@
 import appConfig from "../config.json";
 import { Box, Button, Text, TextField, Image } from "@skynexui/components";
-// import ReactBg from "../assets/img/react.png"
 
 function GlobalStyle() {
   return (
@@ -71,9 +70,10 @@ export default function PaginaInicial() {
       <Box
         styleSheet={{
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          backgroundColor: appConfig.theme.colors.primary[500],
-          backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)',
-          backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
+          backgroundColor: appConfig.theme.colors.primary[400],
+          backgroundImage: 'url(/react.png)',
+          backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply', backgroundPosition: "center",
+          border: `1px solid ${appConfig.theme.colors.primary["aqua"]}`,
         }}
       >
         <Box
@@ -85,10 +85,13 @@ export default function PaginaInicial() {
               xs: 'column',
               sm: 'row',
             },
-            width: '100%', maxWidth: '700px',
-            borderRadius: '5px', padding: '32px', margin: '16px',
+            width: '100%', maxWidth: '600px',
+            borderRadius: '10px', padding: '32px', margin: '16px',
             boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
-            backgroundColor: appConfig.theme.colors.neutrals[700],
+            backgroundColor: appConfig.theme.colors.neutrals[100],
+            backgroundImage: 'url(/react.png)',
+            backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply', backgroundPosition: "center",
+            opacity: .9
           }}
         >
           {/* Formulário */}
@@ -96,11 +99,11 @@ export default function PaginaInicial() {
             as="form"
             styleSheet={{
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-              width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
+              width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '15px',
             }}
           >
             <Title tag="h2">Boas vindas de volta!</Title>
-            <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
+            <Text variant="body3" styleSheet={{ marginBottom: '15px', color: appConfig.theme.colors.neutrals[200] }}>
               {appConfig.name}
             </Text>
 
@@ -109,9 +112,9 @@ export default function PaginaInicial() {
               textFieldColors={{
                 neutral: {
                   textColor: appConfig.theme.colors.neutrals[200],
-                  mainColor: appConfig.theme.colors.neutrals[900],
-                  mainColorHighlight: appConfig.theme.colors.primary[200],
-                  backgroundColor: appConfig.theme.colors.neutrals[800],
+                  mainColor: appConfig.theme.colors.primary["purple"],
+                  mainColorHighlight: appConfig.theme.colors.primary["aqua"],
+                  backgroundColor: appConfig.theme.colors.neutrals[900],
                 },
               }}
             />
@@ -121,9 +124,9 @@ export default function PaginaInicial() {
               fullWidth
               buttonColors={{
                 contrastColor: appConfig.theme.colors.neutrals["000"],
-                mainColor: appConfig.theme.colors.neutrals["500"],
-                mainColorLight: appConfig.theme.colors.primary[400],
-                mainColorStrong: appConfig.theme.colors.primary[200],
+                mainColor: appConfig.theme.colors.primary["aqua"],
+                mainColorLight: appConfig.theme.colors.primary["aqua"],
+                mainColorStrong: appConfig.theme.colors.primary["purple"],
               }}
             />
           </Box>
@@ -138,9 +141,9 @@ export default function PaginaInicial() {
               alignItems: 'center',
               maxWidth: '200px',
               padding: '16px',
-              backgroundColor: appConfig.theme.colors.neutrals[800],
+              backgroundColor: appConfig.theme.colors.neutrals[900],
               border: '1px solid',
-              borderColor: appConfig.theme.colors.primary[200],
+              borderColor: appConfig.theme.colors.primary["aqua"],
               borderRadius: '10px',
               flex: 1,
               minHeight: '240px',
@@ -156,7 +159,7 @@ export default function PaginaInicial() {
             <Text
               variant="body4"
               styleSheet={{
-                color: appConfig.theme.colors.primary[200],
+                color: appConfig.theme.colors.primary["aqua"],
                 backgroundColor: appConfig.theme.colors.neutrals[900],
                 padding: '3px 10px',
                 borderRadius: '1000px'
