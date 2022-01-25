@@ -8,4 +8,4 @@
 
 ## O projeto até agora.
 
-<img src="../aluracord/public/layout-projeto.png">
+<img src="public/layout-projeto.png">
