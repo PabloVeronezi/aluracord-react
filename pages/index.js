@@ -22,26 +22,33 @@ function Title(props) {
 }
 
 export default function PaginaInicial() {
-  const [user, setUser] = React.useState({
-    login: 'PabloVeronezi'
-  });
+  const [user, setUser] = React.useState({});
   const roteamento = useRouter();
 
   async function getUserData(nome) {
+
     const url = `https://api.github.com/users/${nome}`;
-    const service = await fetch(url).then(resposta => {
-      return resposta.json();
-    }).then(dados => {
-      if (dados.message !== undefined) {
-        const userGithub = {
-          login: dados.login,
-          location: dados.location,
-          public_repos: dados.public_repos,
-          followers: dados.followers
-        }
-        setUser(userGithub)
+    await fetch(url).then(resposta => {
+      if (resposta.ok) {
+        return resposta.json();
+      } else {
+        new Error('Não foi possível realizar a requisição, pois ' + resposta.statusText);
       }
+    }).then(dados => {
+
+      const userGithub = {
+        login: dados.login,
+        name: dados.name,
+        location: dados.location,
+        public_repos: dados.public_repos,
+        followers: dados.followers,
+        avatar: dados.avatar_url
+      }
+      setUser(userGithub)
+
       // Gambiarra
+    }).catch(err => {
+      console.error(err)
     })
   }
 
@@ -53,7 +60,6 @@ export default function PaginaInicial() {
           backgroundColor: appConfig.theme.colors.primary[400],
           backgroundImage: 'url(/react.png)',
           backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply', backgroundPosition: "center",
-          border: `1px solid ${appConfig.theme.colors.primary["aqua"]}`,
         }}
       >
         <Box
@@ -92,15 +98,15 @@ export default function PaginaInicial() {
               display: "flex", gap: "1rem"
             }}>
               <TextField
-                value={user.login}
+                autoComplete="off"
                 onChange={function (evento) {
-                  // Onde está o valor?
                   let valor = evento.target.value
-                  // Trocar o valor da variavel
-                  // através do React
-                  let userInputValue = {
+                  const userInputValue = {
                     ...user,
-                    login: valor
+                    login: valor,
+                    name: "",
+                    location: "",
+                    avatar: "/user_logo.png"
                   }
                   setUser(userInputValue)
                 }}
@@ -113,13 +119,15 @@ export default function PaginaInicial() {
                     backgroundColor: appConfig.theme.colors.neutrals[900],
                   },
                 }}
+
               />
 
               <Button
-                type='button'
+                type='submit'
                 label={<FcSearch size={20} />}
-                onClick={() => {
-                  getUserData(user.login)
+                onClick={(e) => {
+                  e.preventDefault();
+                  getUserData(user.login);
                 }}
                 buttonColors={{
                   contrastColor: appConfig.theme.colors.neutrals["000"],
@@ -155,7 +163,6 @@ export default function PaginaInicial() {
               }}
             />
 
-
           </Box>
           {/* Formulário */}
 
@@ -181,7 +188,7 @@ export default function PaginaInicial() {
                 borderRadius: '50%',
                 marginBottom: '16px',
               }}
-              src={user.login !== undefined ? `https://github.com/${user.login}.png` : "/user_logo.png"}
+              src={user.login !== undefined ? user.avatar : "/user_logo.png"}
             />
             {user.login && user.login.length > 2 && (
               <Text
@@ -193,7 +200,7 @@ export default function PaginaInicial() {
                   borderRadius: '1000px'
                 }}
               >
-                {user.login}
+                {user.name}
               </Text>
             )}
             <Text
