@@ -2,6 +2,7 @@ import appConfig from "../config.json";
 import { Box, Button, Text, TextField, Image } from "@skynexui/components";
 import { useRouter } from "next/router";
 import React from "react";
+import { FcSearch } from "react-icons/fc";
 
 function Title(props) {
   const Tag = props.tag || "h1";
@@ -20,39 +21,29 @@ function Title(props) {
   );
 }
 
-// Componente React
-// function HomePage() {
-//   return (
-//     <div>
-//       <GlobalStyle />
-//       <Title tag="h2">Boas vindas de volta!</Title>
-//       <h2>Discord - Alura Matrix</h2>
-//     </div>
-//   )
-// }
-
-// export default HomePage;
-
 export default function PaginaInicial() {
-  const [user, setUser] = React.useState({});
+  const [user, setUser] = React.useState({
+    login: 'PabloVeronezi'
+  });
   const roteamento = useRouter();
 
-  const getUserData = (name) => {
-    const url = `https://api.github.com/users/${name}`;
-    fetch(url).then(resposta => {
+  async function getUserData(nome) {
+    const url = `https://api.github.com/users/${nome}`;
+    const service = await fetch(url).then(resposta => {
       return resposta.json();
     }).then(dados => {
-      const userGithub = {
-        login: dados.login,
-        location: dados.location,
-        public_repos: dados.public_repos,
-        followers: dados.followers
+      if (dados.message !== undefined) {
+        const userGithub = {
+          login: dados.login,
+          location: dados.location,
+          public_repos: dados.public_repos,
+          followers: dados.followers
+        }
+        setUser(userGithub)
       }
-      setUser(userGithub)
+      // Gambiarra
     })
   }
-
-
 
   return (
     <>
@@ -86,11 +77,6 @@ export default function PaginaInicial() {
           {/* Formulário */}
           <Box
             as="form"
-            onSubmit={function (event) {
-              event.preventDefault();
-              roteamento.push("/chat")
-              // window.location.href = "/chat";
-            }}
             styleSheet={{
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
               width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '15px',
@@ -102,54 +88,74 @@ export default function PaginaInicial() {
               {appConfig.name}
             </Text>
 
-            {/* <input
-              type="text"
-              value={username}
-              onChange={function (evento) {
-                // Ode está o valor?
-                const valor = evento.target.value;
-                // Trocar o valor da variavel
-                // através do React
-                setUsername(valor);
-              }}
-            /> */}
+            <div style={{
+              display: "flex", gap: "1rem"
+            }}>
+              <TextField
+                value={user.login}
+                onChange={function (evento) {
+                  // Onde está o valor?
+                  let valor = evento.target.value
+                  // Trocar o valor da variavel
+                  // através do React
+                  let userInputValue = {
+                    ...user,
+                    login: valor
+                  }
+                  setUser(userInputValue)
+                }}
+                placeholder="Usuário GitHub"
+                textFieldColors={{
+                  neutral: {
+                    textColor: appConfig.theme.colors.neutrals[200],
+                    mainColor: appConfig.theme.colors.primary["purple"],
+                    mainColorHighlight: appConfig.theme.colors.primary["aqua"],
+                    backgroundColor: appConfig.theme.colors.neutrals[900],
+                  },
+                }}
+              />
 
-            <TextField
-              value={user.name}
-              onChange={function (evento) {
-                // Onde está o valor?
-                let valor = evento.target.value
-                const inputUser = {
-                  login: valor
-                }
-                // Trocar o valor da variavel
-                // através do React
-                setUser(inputUser);
-                getUserData(inputUser);
-                console.log(user);
-              }}
-              fullWidth
-              placeholder="Usuário GitHub"
-              textFieldColors={{
-                neutral: {
-                  textColor: appConfig.theme.colors.neutrals[200],
-                  mainColor: appConfig.theme.colors.primary["purple"],
-                  mainColorHighlight: appConfig.theme.colors.primary["aqua"],
+              <Button
+                type='button'
+                label={<FcSearch size={20} />}
+                onClick={() => {
+                  getUserData(user.login)
+                }}
+                buttonColors={{
+                  contrastColor: appConfig.theme.colors.neutrals["000"],
+                  mainColorLight: appConfig.theme.colors.primary["100"],
+                  mainColorStrong: appConfig.theme.colors.primary["purple"],
+                }}
+                styleSheet={{
+                  padding: "4px 8px",
                   backgroundColor: appConfig.theme.colors.neutrals[900],
-                },
-              }}
-            />
+                  border: "1px solid #D85FE9",
+                  marginBottom: ".5rem"
+                }}
+              />
+            </div>
+
             <Button
               type='submit'
               label='Entrar'
-              fullWidth
+              // fullWidth
+              onClick={function (event) {
+                event.preventDefault();
+                roteamento.push("/chat")
+                // window.location.href = "/chat";
+              }}
               buttonColors={{
                 contrastColor: appConfig.theme.colors.neutrals["000"],
                 mainColor: appConfig.theme.colors.primary["aqua"],
                 mainColorLight: appConfig.theme.colors.primary["aqua"],
                 mainColorStrong: appConfig.theme.colors.primary["purple"],
               }}
+              styleSheet={{
+                width: "15.6rem"
+              }}
             />
+
+
           </Box>
           {/* Formulário */}
 
@@ -175,9 +181,9 @@ export default function PaginaInicial() {
                 borderRadius: '50%',
                 marginBottom: '16px',
               }}
-              src={user.name && user.name.length > 2 ? `https://github.com/${user.name}.png` : "/user_logo.png"}
+              src={user.login !== undefined ? `https://github.com/${user.login}.png` : "/user_logo.png"}
             />
-            {user.name && user.name.length > 2 && (
+            {user.login && user.login.length > 2 && (
               <Text
                 variant="body4"
                 styleSheet={{
@@ -187,7 +193,7 @@ export default function PaginaInicial() {
                   borderRadius: '1000px'
                 }}
               >
-                {user.name}
+                {user.login}
               </Text>
             )}
             <Text
@@ -199,7 +205,7 @@ export default function PaginaInicial() {
                 borderRadius: '1000px'
               }}
             >
-
+              {user.location}
             </Text>
 
           </Box>
