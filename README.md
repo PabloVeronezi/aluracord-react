@@ -15,4 +15,8 @@ Dica: você vai usar a função fetch do JavaScript
 - Colocar algo divertido na página 404.js da sua pasta pages e compartilhar com a gente no twitter!
 
 ## O projeto até agora.
+Página Inicial
 <img src="public/layout-projeto.png">
+
+Página do Chat
+<img src="public/chat_layout.png">
