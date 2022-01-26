@@ -1,35 +1,7 @@
 import appConfig from "../config.json";
 import { Box, Button, Text, TextField, Image } from "@skynexui/components";
-
-function GlobalStyle() {
-  return (
-    <style global jsx>{`
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        list-style: none;
-      }
-      body {
-        font-family: 'Open Sans', sans-serif;
-      }
-      /* App fit Height */ 
-      html, body, #__next {
-        min-height: 100vh;
-        display: flex;
-        flex: 1;
-      }
-      #__next {
-        flex: 1;
-      }
-      #__next > * {
-        flex: 1;
-      }
-      /* ./App fit Height */ 
-    `}</style>
-  );
-}
-
+import { useRouter } from "next/router";
+import React from "react";
 
 function Title(props) {
   const Tag = props.tag || "h1";
@@ -62,11 +34,28 @@ function Title(props) {
 // export default HomePage;
 
 export default function PaginaInicial() {
-  const username = 'PabloVeronezi';
+  const [user, setUser] = React.useState({});
+  const roteamento = useRouter();
+
+  const getUserData = (name) => {
+    const url = `https://api.github.com/users/${name}`;
+    fetch(url).then(resposta => {
+      return resposta.json();
+    }).then(dados => {
+      const userGithub = {
+        login: dados.login,
+        location: dados.location,
+        public_repos: dados.public_repos,
+        followers: dados.followers
+      }
+      setUser(userGithub)
+    })
+  }
+
+
 
   return (
     <>
-      <GlobalStyle />
       <Box
         styleSheet={{
           display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -97,18 +86,50 @@ export default function PaginaInicial() {
           {/* Formulário */}
           <Box
             as="form"
+            onSubmit={function (event) {
+              event.preventDefault();
+              roteamento.push("/chat")
+              // window.location.href = "/chat";
+            }}
             styleSheet={{
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
               width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '15px',
             }}
           >
             <Title tag="h2">Boas vindas de volta!</Title>
-            <Text variant="body3" styleSheet={{ marginBottom: '15px', color: appConfig.theme.colors.neutrals[200] }}>
+            <Text variant="body3" styleSheet={{ marginBottom: '15px', color: appConfig.theme.colors.neutrals[100], fontSize: "1.2rem" }}
+            >
               {appConfig.name}
             </Text>
 
+            {/* <input
+              type="text"
+              value={username}
+              onChange={function (evento) {
+                // Ode está o valor?
+                const valor = evento.target.value;
+                // Trocar o valor da variavel
+                // através do React
+                setUsername(valor);
+              }}
+            /> */}
+
             <TextField
+              value={user.name}
+              onChange={function (evento) {
+                // Onde está o valor?
+                let valor = evento.target.value
+                const inputUser = {
+                  login: valor
+                }
+                // Trocar o valor da variavel
+                // através do React
+                setUser(inputUser);
+                getUserData(inputUser);
+                console.log(user);
+              }}
               fullWidth
+              placeholder="Usuário GitHub"
               textFieldColors={{
                 neutral: {
                   textColor: appConfig.theme.colors.neutrals[200],
@@ -154,8 +175,21 @@ export default function PaginaInicial() {
                 borderRadius: '50%',
                 marginBottom: '16px',
               }}
-              src={`https://github.com/${username}.png`}
+              src={user.name && user.name.length > 2 ? `https://github.com/${user.name}.png` : "/user_logo.png"}
             />
+            {user.name && user.name.length > 2 && (
+              <Text
+                variant="body4"
+                styleSheet={{
+                  color: appConfig.theme.colors.primary["aqua"],
+                  backgroundColor: appConfig.theme.colors.neutrals[900],
+                  padding: '3px 10px',
+                  borderRadius: '1000px'
+                }}
+              >
+                {user.name}
+              </Text>
+            )}
             <Text
               variant="body4"
               styleSheet={{
@@ -165,8 +199,9 @@ export default function PaginaInicial() {
                 borderRadius: '1000px'
               }}
             >
-              {username}
+
             </Text>
+
           </Box>
           {/* Photo Area */}
         </Box>
