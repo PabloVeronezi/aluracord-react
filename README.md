@@ -16,4 +16,8 @@ Dica: você vai usar a função fetch do JavaScript
 
 ## O projeto até agora.
 
+<<<<<<< HEAD
 <img src="public/layout-projeto.png">
+=======
+<img src="public/layout-projeto.png">
+>>>>>>> b3298eaae68d0ef7dc8ae53e5fb17ca1a32dbc2e
