@@ -16,7 +16,7 @@ Dica: você vai usar a função fetch do JavaScript
 
 ## O projeto até agora.
 Página Inicial
-<img src="public/layout-projeto.png">
+<img src="public/index_gif.gif">
 
 Página do Chat
-<img src="public/chat_layout.png">
+<img src="public/chat_gif.gif">

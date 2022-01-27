@@ -1,6 +1,8 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React from 'react';
 import appConfig from '../config.json';
+import { FaRegCommentDots } from "react-icons/fa"
+import { FcFullTrash } from "react-icons/fc"
 
 export default function ChatPage() {
   const [mensagem, setMensagem] = React.useState("");
@@ -11,7 +13,6 @@ export default function ChatPage() {
       id: listaDeMensagens.length + 1,
       de: "PabloVeronezi",
       texto: novaMensangem,
-
     }
     setListaDeMensagens([
       mensagem,
@@ -70,7 +71,7 @@ export default function ChatPage() {
             padding: '16px',
           }}
         >
-          <MessageList mensagens={listaDeMensagens} />
+          <MessageList mensagens={listaDeMensagens} setListaDeMensagens={setListaDeMensagens} />
 
           <Box
             as="form"
@@ -83,12 +84,12 @@ export default function ChatPage() {
               value={mensagem}
               onChange={event => {
                 const valor = event.target.value;
-                setMensagem(valor);
+                setMensagem(valor)
               }}
               onKeyPress={event => {
                 if (event.key === "Enter") {
                   event.preventDefault();
-
+                  if (!handleNovaMensagem(mensagem)) return;
                   handleNovaMensagem(mensagem)
                 }
               }}
@@ -103,6 +104,25 @@ export default function ChatPage() {
                 backgroundColor: appConfig.theme.colors.neutrals[800],
                 marginRight: '12px',
                 color: appConfig.theme.colors.neutrals[200],
+              }}
+            />
+            <Button
+              type='submit'
+              label={<FaRegCommentDots size={26} color="#5FABEB" />}
+              onClick={event => {
+                event.preventDefault();
+                handleNovaMensagem(mensagem);
+              }}
+              buttonColors={{
+                contrastColor: appConfig.theme.colors.neutrals["000"],
+                mainColorLight: appConfig.theme.colors.primary["100"],
+                mainColorStrong: "rgba(0, 0, 0, .8)",
+              }}
+              styleSheet={{
+                padding: "4px 8px",
+                backgroundColor: "rgba(0, 0, 0, .3)",
+                border: "1px solid #D85FE9",
+                marginBottom: ".5rem"
               }}
             />
           </Box>
@@ -137,7 +157,11 @@ function Header() {
 }
 
 function MessageList(props) {
-  ;
+  function handleDeletarMensagem(id) {
+    const listaFiltrada = props.mensagens.filter((mensagem) => mensagem.id !== id);
+    props.setListaDeMensagens([...listaFiltrada]);
+  }
+
   return (
     <Box
       tag="ul"
@@ -161,13 +185,17 @@ function MessageList(props) {
               marginBottom: '12px',
               backgroundColor: "rgba(0, 0, 0, .3)",
               hover: {
-                backgroundColor: appConfig.theme.colors.primary["aqua"],
+                backgroundColor: "rgba(0, 0, 0, .8)",
               }
             }}
           >
             <Box
               styleSheet={{
                 marginBottom: '8px',
+                display: "flex",
+                alignItems: "center",
+                gap: "10px"
+
               }}
             >
               <Image
@@ -195,6 +223,39 @@ function MessageList(props) {
               >
                 {(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }))}
               </Text>
+              <Box
+                styleSheet={{
+                  width: "100%",
+                  marginBottom: '8px',
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "end",
+                  gap: "10px"
+                }}
+              >
+                <Button
+                  variant='tertiary'
+                  type='button'
+                  colorVariant='neutral'
+                  label={<FcFullTrash size={20} />}
+                  onClick={() => {
+                    handleDeletarMensagem(mensagem.id)
+                  }}
+                  styleSheet={{
+                    padding: "2px 5px",
+                    color: appConfig.theme.colors.primary["aqua"],
+                    border: "1px solid",
+                    hover: {
+                      borderColor: appConfig.theme.colors.primary["purple"],
+                      backgroundColor: "rgba(0, 0, 0, .8)"
+                    },
+                    focus: {
+                      backgroundColor: "rgba(0, 0, 0, .8)",
+                      borderColor: appConfig.theme.colors.primary["purple"]
+                    },
+                  }}
+                />
+              </Box>
             </Box>
             {mensagem.texto}
           </Text>
