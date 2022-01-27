@@ -3,34 +3,51 @@ import React from 'react';
 import appConfig from '../config.json';
 import { FaRegCommentDots } from "react-icons/fa"
 import { FcFullTrash } from "react-icons/fc"
+import { createClient } from '@supabase/supabase-js'
+
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzMxNzYyMywiZXhwIjoxOTU4ODkzNjIzfQ.CiXKnGsRM7340FD-IBpPNdDnosEg6nYLeXt0Ew3cEsU";
+const SUPABASE_URL = "https://xsmouxfmqotfsimveirc.supabase.co";
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export default function ChatPage() {
   const [mensagem, setMensagem] = React.useState("");
   const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
 
+  React.useEffect(() => {
+    supabaseClient
+      .from("mensagens")
+      .select("*")
+      .order("id", { ascending: false })
+      .then(({ data }) => {
+        setListaDeMensagens(data);
+      });
+  }, []);
+
   function handleNovaMensagem(novaMensangem) {
     const mensagem = {
-      id: listaDeMensagens.length + 1,
+      // id: listaDeMensagens.length + 1,
       de: "PabloVeronezi",
       texto: novaMensangem,
     }
-    setListaDeMensagens([
-      mensagem,
-      ...listaDeMensagens,
-    ]);
+
+    supabaseClient
+      .from("mensagens")
+      .insert([
+        mensagem
+      ])
+      .then(({ data }) => {
+        setListaDeMensagens([
+          data[0],
+          ...listaDeMensagens,
+        ]);
+
+      })
+
     setMensagem("");
   }
 
-  /*
-   Usuario:
-   - Usuário digita no campo textarea
-   - Apertar enter pra enviar msg
 
-   Dev:
-   [X] Campo criado
-   [X] Usar onChange, useState (ter if para caso seja enter para limpar a variável)
-   [ ] Lista de mensagens
-   */
+
   return (
     <Box
       styleSheet={{
@@ -71,6 +88,7 @@ export default function ChatPage() {
             padding: '16px',
           }}
         >
+
           <MessageList mensagens={listaDeMensagens} setListaDeMensagens={setListaDeMensagens} />
 
           <Box
@@ -174,6 +192,7 @@ function MessageList(props) {
         marginBottom: '16px',
       }}
     >
+
       {props.mensagens.map((mensagem) => {
         return (
           <Text
@@ -206,7 +225,7 @@ function MessageList(props) {
                   display: 'inline-block',
                   marginRight: '8px',
                 }}
-                src={`https://github.com/pabloveronezi.png`}
+                src={`https://github.com/${mensagem.de}.png`}
               />
               <Text tag="strong" styleSheet={{
                 color: appConfig.theme.colors.neutrals["100"],
